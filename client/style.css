@@ -1,0 +1,237 @@
+body{
+    margin:0;
+    padding:30px;
+    font-family:'Segoe UI',sans-serif;
+
+    background:linear-gradient(
+    135deg,
+    #f7f3e9,
+    #eaf5e6,
+    #f2eadf
+    );
+
+    color:#4b2e1f;
+}
+
+/* Header */
+
+h1{
+    text-align:center;
+    font-size:3rem;
+    color:#5a3825;
+
+    text-shadow:
+    0 0 10px rgba(255,223,120,0.8),
+    0 0 20px rgba(255,223,120,0.5);
+
+    margin-bottom:30px;
+}
+
+/* Form Card */
+
+form{
+    max-width:600px;
+    margin:auto;
+
+    background:#fdfbf5;
+
+    padding:30px;
+
+    border-radius:25px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 0 30px rgba(180,220,160,0.3);
+
+    border:2px solid #d8e6c8;
+}
+
+/* Labels */
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+
+    font-weight:bold;
+    color:#5d3b27;
+}
+
+/* Inputs */
+
+input,
+select{
+
+    width:100%;
+    padding:12px;
+
+    border-radius:12px;
+
+    border:2px solid #c9d8b6;
+
+    background:#fffef8;
+
+    font-size:16px;
+
+    transition:0.3s;
+}
+
+input:focus,
+select:focus{
+
+    outline:none;
+
+    border-color:#7cb342;
+
+    box-shadow:
+    0 0 15px rgba(124,179,66,0.5);
+}
+
+/* Button */
+
+button{
+
+    width:100%;
+    margin-top:20px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:linear-gradient(
+    135deg,
+    #5d4037,
+    #7b5e57
+    );
+
+    color:white;
+
+    font-size:18px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.4s;
+}
+
+button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 0 20px rgba(255,223,120,0.8),
+    0 0 35px rgba(255,223,120,0.4);
+}
+
+/* Section Headings */
+
+h2{
+    text-align:center;
+
+    margin-top:40px;
+
+    color:#5d4037;
+
+    font-size:2rem;
+}
+
+/* Waste Logs */
+
+#logs{
+
+    max-width:800px;
+
+    margin:20px auto;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.log-card{
+
+    background:#fffef8;
+
+    border-left:8px solid #8bc34a;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+}
+
+.log-card:hover{
+
+    transform:scale(1.02);
+
+    box-shadow:
+    0 0 20px rgba(139,195,74,0.4);
+}
+
+/* Map */
+
+#map{
+
+    height:500px;
+
+    margin:30px auto;
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    border:4px solid #d6e4c6;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.1),
+    0 0 30px rgba(180,220,160,0.3);
+}
+
+/* Decorative Glow */
+
+body::before{
+
+    content:"🌼";
+
+    position:fixed;
+
+    top:20px;
+    right:30px;
+
+    font-size:40px;
+
+    animation:bloom 3s infinite alternate;
+}
+
+body::after{
+
+    content:"🌿";
+
+    position:fixed;
+
+    bottom:20px;
+    left:30px;
+
+    font-size:40px;
+
+    animation:bloom 4s infinite alternate;
+}
+
+@keyframes bloom{
+
+    from{
+        transform:scale(1);
+        opacity:0.7;
+    }
+
+    to{
+        transform:scale(1.3);
+        opacity:1;
+    }
+}
