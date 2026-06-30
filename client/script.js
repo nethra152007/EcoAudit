@@ -27,6 +27,12 @@ const paperWasteElement =
 const metalWasteElement =
     document.getElementById("metalWaste");
 
+const glassWasteElement =
+    document.getElementById("glassWaste");
+
+const organicWasteElement =
+    document.getElementById("organicWaste");
+
 const ewasteWasteElement =
     document.getElementById("ewasteWaste");
 const treesSavedElement =
@@ -76,10 +82,12 @@ async function loadLogs() {
         logsDiv.innerHTML = "";
 
         let totalWaste = 0;
-        let plasticWaste = 0;
-        let paperWaste = 0;
-        let metalWaste = 0;
-        let ewasteWaste = 0;
+let plasticWaste = 0;
+let paperWaste = 0;
+let metalWaste = 0;
+let glassWaste = 0;
+let organicWaste = 0;
+let ewasteWaste = 0;
 
         map.eachLayer(layer => {
 
@@ -98,23 +106,31 @@ async function loadLogs() {
 
             switch (log.category) {
 
-                case "Plastic":
-                    plasticWaste += weight;
-                    break;
+    case "Plastic":
+        plasticWaste += weight;
+        break;
 
-                case "Paper":
-                    paperWaste += weight;
-                    break;
+    case "Paper":
+        paperWaste += weight;
+        break;
 
-                case "Metal":
-                    metalWaste += weight;
-                    break;
+    case "Metal":
+        metalWaste += weight;
+        break;
 
-                case "E-Waste":
-                    ewasteWaste += weight;
-                    break;
+    case "Glass":
+        glassWaste += weight;
+        break;
 
-            }
+    case "Organic":
+        organicWaste += weight;
+        break;
+
+    case "E-Waste":
+        ewasteWaste += weight;
+        break;
+
+}
 
             const logCard =
                 document.createElement("div");
@@ -193,6 +209,15 @@ async function loadLogs() {
             metalWasteElement.textContent =
                 `${metalWaste.toFixed(1)} kg`;
         }
+        if (glassWasteElement) {
+    glassWasteElement.textContent =
+        `${glassWaste.toFixed(1)} kg`;
+}
+
+if (organicWasteElement) {
+    organicWasteElement.textContent =
+        `${organicWaste.toFixed(1)} kg`;
+}
 
         if (ewasteWasteElement) {
             ewasteWasteElement.textContent =
@@ -238,6 +263,16 @@ if (paperWaste > maxWaste) {
 if (metalWaste > maxWaste) {
     maxWaste = metalWaste;
     topCategory = "Metal";
+}
+
+if (glassWaste > maxWaste) {
+    maxWaste = glassWaste;
+    topCategory = "Glass";
+}
+
+if (organicWaste > maxWaste) {
+    maxWaste = organicWaste;
+    topCategory = "Organic";
 }
 
 if (ewasteWaste > maxWaste) {
@@ -303,14 +338,19 @@ if (pieCanvas) {
                 "Plastic",
                 "Paper",
                 "Metal",
+                "Glass",
+                "Organic",
                 "E-Waste"
             ],
 
             datasets: [{
+
                 data: [
                     plasticWaste,
                     paperWaste,
                     metalWaste,
+                    glassWaste,
+                    organicWaste,
                     ewasteWaste
                 ],
 
@@ -318,29 +358,41 @@ if (pieCanvas) {
                     "#4CAF50",
                     "#2196F3",
                     "#FF9800",
+                    "#00BCD4",
+                    "#8BC34A",
                     "#9C27B0"
                 ],
 
                 borderWidth: 2
+
             }]
+
         },
 
         options: {
 
             responsive: true,
 
+            maintainAspectRatio: false,
+
             plugins: {
 
                 title: {
+
                     display: true,
+
                     text: "Community Waste Distribution",
+
                     font: {
                         size: 18
                     }
+
                 },
 
                 legend: {
+
                     position: "bottom"
+
                 }
 
             }
