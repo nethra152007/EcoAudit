@@ -45,6 +45,12 @@ const goalProgressElement =
 
 const goalTextElement =
     document.getElementById("goalText");
+const communityLevelElement =
+    document.getElementById("communityLevel");
+
+const goalLevelTextElement =
+    document.getElementById("goalLevelText");
+let wastePieChart;
 
 
 const locationStatus =
@@ -198,11 +204,8 @@ async function loadLogs() {
 const wasteRecycled =
     totalWaste.toFixed(1);
 
-const treesSaved =
-    (totalWaste * 0.5).toFixed(1);
 
-const wasteRecycled =
-    totalWaste.toFixed(1);
+
 
 const co2Prevented =
     (totalWaste * 0.75).toFixed(1);
@@ -247,24 +250,105 @@ if (topCategoryElement) {
         `${topCategory} (${maxWaste.toFixed(1)} kg)`;
 }
 
-/* Community Goal */
+/* Community Level System */
 
-const goalTarget = 100;
+const level =
+    Math.floor(totalWaste / 100) + 1;
+
+const currentLevelStart =
+    (level - 1) * 100;
+
+const nextLevelTarget =
+    level * 100;
 
 const progress =
-    Math.min(
-        (totalWaste / goalTarget) * 100,
-        100
-    );
+    ((totalWaste - currentLevelStart) /
+    (nextLevelTarget - currentLevelStart)) * 100;
+
+if (communityLevelElement) {
+    communityLevelElement.textContent =
+        `Level ${level}`;
+}
 
 if (goalProgressElement) {
     goalProgressElement.style.width =
-        `${progress}%`;
+        `${Math.min(progress, 100)}%`;
 }
 
 if (goalTextElement) {
     goalTextElement.textContent =
-        `${totalWaste.toFixed(1)} / ${goalTarget} kg`;
+        `${totalWaste.toFixed(1)} / ${nextLevelTarget} kg`;
+}
+
+if (goalLevelTextElement) {
+    goalLevelTextElement.textContent =
+        `Reach ${nextLevelTarget} kg to unlock Level ${level + 1}`;
+}
+const pieCanvas =
+    document.getElementById("wastePieChart");
+
+if (pieCanvas) {
+
+    if (wastePieChart) {
+        wastePieChart.destroy();
+    }
+
+    wastePieChart = new Chart(pieCanvas, {
+
+        type: "pie",
+
+        data: {
+
+            labels: [
+                "Plastic",
+                "Paper",
+                "Metal",
+                "E-Waste"
+            ],
+
+            datasets: [{
+                data: [
+                    plasticWaste,
+                    paperWaste,
+                    metalWaste,
+                    ewasteWaste
+                ],
+
+                backgroundColor: [
+                    "#4CAF50",
+                    "#2196F3",
+                    "#FF9800",
+                    "#9C27B0"
+                ],
+
+                borderWidth: 2
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                title: {
+                    display: true,
+                    text: "Community Waste Distribution",
+                    font: {
+                        size: 18
+                    }
+                },
+
+                legend: {
+                    position: "bottom"
+                }
+
+            }
+
+        }
+
+    });
+
 }
 }
     catch (error) {

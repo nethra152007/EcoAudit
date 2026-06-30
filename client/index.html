@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -18,7 +17,7 @@
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -33,103 +32,118 @@
 
     </header>
 
-    <!-- Hero Section -->
-
     <section class="hero">
 
         <div class="hero-content">
 
-            <h2>
-                Small Actions Create Big Environmental Change 🌿
-            </h2>
+            <h2>Small Actions Create Big Environmental Change 🌿</h2>
 
             <p>
-                Report waste, upload disposal proof,
-                visualize community impact,
-                and contribute to a cleaner future.
+                Report waste, upload disposal proof, visualize
+                community impact, and contribute to a cleaner future.
             </p>
 
         </div>
 
     </section>
 
-    <!-- Audit Dashboard -->
+    <!-- Dashboard -->
+     <section class="dashboard">
 
-    <section class="dashboard">
+    <h2>📊 Audit Dashboard</h2>
 
-        <h2>📊 Audit Dashboard</h2>
+    <div class="dashboard-cards">
 
-        <div class="dashboard-cards">
-
-            <div class="dashboard-card">
-                <h3>Total Waste Logged</h3>
-                <p id="totalWaste">0 kg</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>Total Reports</h3>
-                <p id="totalReports">0</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>Plastic</h3>
-                <p id="plasticWaste">0 kg</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>Paper</h3>
-                <p id="paperWaste">0 kg</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>Metal</h3>
-                <p id="metalWaste">0 kg</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>E-Waste</h3>
-                <p id="ewasteWaste">0 kg</p>
-            </div>
-
+        <div class="dashboard-card">
+            <h3>Total Waste Logged</h3>
+            <p id="totalWaste">0 kg</p>
         </div>
 
-    </section>
-
-    <!-- Environmental Impact Dashboard -->
-
-    <section class="impact-section">
-
-        <h2>🌍 Environmental Impact</h2>
-
-        <div class="impact-cards">
-
-            <div class="impact-card">
-
-                <h3>🌳 Trees Saved</h3>
-
-                <p id="treesSaved">0</p>
-
-            </div>
-
-            <div class="impact-card">
-
-                <h3>♻️ Waste Recycled</h3>
-
-                <p id="wasteRecycled">0 kg</p>
-
-            </div>
-
-            <div class="impact-card">
-
-                <h3>🌍 CO₂ Prevented</h3>
-
-                <p id="co2Prevented">0 kg</p>
-
-            </div>
-
+        <div class="dashboard-card">
+            <h3>Total Reports</h3>
+            <p id="totalReports">0</p>
         </div>
 
-    </section>
+        <div class="dashboard-card">
+            <h3>Plastic</h3>
+            <p id="plasticWaste">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Paper</h3>
+            <p id="paperWaste">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Metal</h3>
+            <p id="metalWaste">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>E-Waste</h3>
+            <p id="ewasteWaste">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>🌳 Trees Saved</h3>
+            <p id="treesSaved">0</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>♻️ Waste Recycled</h3>
+            <p id="wasteRecycled">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>🌍 CO₂ Prevented</h3>
+            <p id="co2Prevented">0 kg</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>🏆 Top Category</h3>
+            <p id="topCategory">-</p>
+        </div>
+        <div class="dashboard-card">
+    <h3>🚀 Community Level</h3>
+    <p id="communityLevel">Level 1</p>
+</div>
+
+    </div>
+
+</section>
+
+<section class="goal-section">
+
+    <h2>🎯 Community Recycling Goal</h2>
+
+    <div class="goal-container">
+
+        <div class="goal-bar">
+            <div id="goalProgress"></div>
+        </div>
+
+        <p id="goalText">
+            0 / 100 kg
+        </p>
+        <p id="goalLevelText">
+    Reach 100 kg to unlock Level 2
+</p>
+
+    </div>
+
+</section>
+
+    <section class="chart-section">
+
+    <h2>🥧 Waste Category Distribution</h2>
+
+    <div class="chart-container">
+
+        <canvas id="wastePieChart"></canvas>
+
+    </div>
+
+</section>
 
     <!-- Waste Submission -->
 
@@ -172,9 +186,7 @@
             <div id="locationStatus"></div>
 
             <button type="submit">
-
                 🌿 Submit Waste Log
-
             </button>
 
         </form>
@@ -189,9 +201,7 @@
 
             <h3>♻️ Eco Friendly</h3>
 
-            <p>
-                Track waste disposal activities.
-            </p>
+            <p>Track waste disposal activities.</p>
 
         </div>
 
@@ -199,9 +209,7 @@
 
             <h3>📍 Geo Mapping</h3>
 
-            <p>
-                Visualize waste locations on a live map.
-            </p>
+            <p>Visualize waste locations on a live map.</p>
 
         </div>
 
@@ -209,9 +217,7 @@
 
             <h3>📷 Proof of Disposal</h3>
 
-            <p>
-                Upload evidence for accountability.
-            </p>
+            <p>Upload evidence for accountability.</p>
 
         </div>
 
@@ -227,7 +233,7 @@
 
     </section>
 
-    <!-- Map Section -->
+    <!-- Map -->
 
     <section>
 
