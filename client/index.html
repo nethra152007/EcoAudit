@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EcoAudit</title>
+<title>EcoAudit - Community Waste Logger</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -22,28 +23,70 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 
 <body>
 
+<header>
+
 <h1>🌱 EcoAudit</h1>
 
-<div class="hero">
+<p class="tagline">
+Track • Audit • Improve Community Waste Management
+</p>
 
-<div class="hero-text">
+</header>
 
-<h2>Small Actions, Big Impact 🌿</h2>
+<section class="hero">
+
+<div class="hero-content">
+
+<h2>Small Actions Create Big Environmental Change 🌿</h2>
 
 <p>
-Log waste around you and help build a cleaner,
-greener community.
+Report waste, upload disposal proof, visualize
+community impact, and contribute to a cleaner future.
+</p>
+
+</div>
+
+</section>
+
+<section class="dashboard">
+
+<h2>📊 Audit Dashboard</h2>
+
+<div class="dashboard-cards">
+
+<div class="dashboard-card">
+
+<h3>Total Waste Logged</h3>
+
+<p id="totalWaste">
+0 kg
+</p>
+
+</div>
+
+<div class="dashboard-card">
+
+<h3>Total Reports</h3>
+
+<p id="totalReports">
+0
 </p>
 
 </div>
 
 </div>
 
+</section>
+
+<section class="form-section">
+
+<h2>📝 Submit Waste Report</h2>
+
 <form id="wasteForm">
 
 <label>Waste Category</label>
 
-<select id="category">
+<select id="category" required>
 
 <option value="Plastic">Plastic</option>
 
@@ -64,47 +107,80 @@ greener community.
 <input
 type="number"
 id="weight"
-placeholder="Enter weight in kg"
+placeholder="Enter waste weight"
 required
+
 >
 
+<label>Proof of Disposal</label>
+
+<input
+type="file"
+id="image"
+accept="image/*"
+
+>
+
+<div id="locationStatus"></div>
+
 <button type="submit">
+
 🌿 Submit Waste Log
+
 </button>
 
 </form>
 
-<div class="stats">
+</section>
 
-<div class="stat-card">
+<section class="features">
+
+<div class="feature-card">
+
 <h3>♻️ Eco Friendly</h3>
-<p>Track community waste easily</p>
+
+<p>Track waste disposal activities.</p>
+
 </div>
 
-<div class="stat-card">
-<h3>🌎 Sustainability</h3>
-<p>Encourage responsible disposal</p>
-</div>
+<div class="feature-card">
 
-<div class="stat-card">
 <h3>📍 Geo Mapping</h3>
-<p>Visualize waste locations</p>
-</div>
+
+<p>Visualize waste locations on a live map.</p>
 
 </div>
 
-<h2>📋 Waste Logs</h2>
+<div class="feature-card">
+
+<h3>📷 Proof of Disposal</h3>
+
+<p>Upload evidence for accountability.</p>
+
+</div>
+
+</section>
+
+<section>
+
+<h2>📋 Community Waste Feed</h2>
 
 <div id="logs"></div>
 
-<h2>📍 Waste Locations</h2>
+</section>
+
+<section>
+
+<h2>🗺️ Waste Location Map</h2>
 
 <div id="map"></div>
+
+</section>
 
 <footer>
 
 <p>
-🌱 EcoAudit | Built for a Sustainable Future 🌿
+🌱 EcoAudit | Community Waste Monitoring Platform
 </p>
 
 </footer>

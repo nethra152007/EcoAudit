@@ -1,73 +1,88 @@
 const map = L.map('map').setView([13.0827, 80.2707], 10);
 
 L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution: '© OpenStreetMap contributors'
+}
 ).addTo(map);
 
 const form = document.getElementById("wasteForm");
 const logsDiv = document.getElementById("logs");
 
-form.addEventListener(
-"submit",
-async (e) => {
+const totalWasteElement =
+document.getElementById("totalWaste");
 
-e.preventDefault();
+const totalReportsElement =
+document.getElementById("totalReports");
 
-navigator.geolocation.getCurrentPosition(
-async (position) => {
-
-const data = {
-category: document.getElementById("category").value,
-weight: document.getElementById("weight").value,
-latitude: position.coords.latitude,
-longitude: position.coords.longitude
-};
-
-await fetch(
-"http://localhost:5000/api/waste",
-{
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify(data)
-}
-);
-
-document.getElementById("weight").value = "";
-
-loadLogs();
-
-}
-);
-
-}
-);
+const locationStatus =
+document.getElementById("locationStatus");
 
 async function loadLogs() {
 
-const res = await fetch(
+try {
+
+const response = await fetch(
 "http://localhost:5000/api/waste"
 );
 
-const logs = await res.json();
+const logs = await response.json();
 
 logsDiv.innerHTML = "";
 
-// Remove old markers
+let totalWaste = 0;
+
 map.eachLayer(layer => {
+
 if (layer instanceof L.Marker) {
 map.removeLayer(layer);
 }
+
 });
 
 logs.forEach(log => {
 
-logsDiv.innerHTML += `
-<div class="log-card">
-<p><strong>${log.category}</strong> - ${log.weight} kg</p>
-</div>
+const weight = parseFloat(log.weight);
+
+if (!isNaN(weight)) {
+totalWaste += weight;
+}
+
+const logCard = document.createElement("div");
+
+logCard.className = "log-card";
+
+logCard.innerHTML = `
+
+<h3>${log.category}</h3>
+
+<p>⚖️ Weight: ${log.weight} kg</p>
+
+<p>📍 Latitude: ${log.latitude}</p>
+
+<p>📍 Longitude: ${log.longitude}</p>
+
+<p>🕒 ${new Date(log.createdAt).toLocaleString()}</p>
+
+${log.image ? `<img
+src="${log.image}"
+alt="Waste Proof"
+style="
+width:100%;
+max-height:250px;
+object-fit:cover;
+border-radius:12px;
+margin-top:10px;
+">` : ""}
 `;
+
+logsDiv.appendChild(logCard);
+
+if (
+log.latitude &&
+log.longitude
+) {
 
 L.marker([
 log.latitude,
@@ -75,11 +90,116 @@ log.longitude
 ])
 .addTo(map)
 .bindPopup(
-`${log.category} - ${log.weight} kg`
+`<b>${log.category}</b> <br>
+${log.weight} kg`
 );
-
-});
 
 }
 
+});
+
+totalWasteElement.textContent =
+`${totalWaste} kg`;
+
+totalReportsElement.textContent =
+logs.length;
+
+}
+catch(error){
+
+console.error(error);
+
+}
+
+}
+
+form.addEventListener(
+"submit",
+async (e) => {
+
+e.preventDefault();
+
+locationStatus.textContent =
+"📍 Getting location...";
+
+navigator.geolocation.getCurrentPosition(
+
+async (position) => {
+
+const formData = new FormData();
+
+formData.append(
+"category",
+document.getElementById("category").value
+);
+
+formData.append(
+"weight",
+document.getElementById("weight").value
+);
+
+formData.append(
+"latitude",
+position.coords.latitude
+);
+
+formData.append(
+"longitude",
+position.coords.longitude
+);
+
+const imageFile =
+document.getElementById("image").files[0];
+
+if(imageFile){
+
+formData.append(
+"image",
+imageFile
+);
+
+}
+
+try {
+
+await fetch(
+"http://localhost:5000/api/waste",
+{
+method: "POST",
+body: formData
+}
+);
+
+locationStatus.textContent =
+"✅ Waste report submitted";
+
+form.reset();
+
 loadLogs();
+
+}
+catch(error){
+
+console.error(error);
+
+locationStatus.textContent =
+"❌ Failed to submit report";
+
+}
+
+},
+
+() => {
+
+locationStatus.textContent =
+"❌ Location permission denied";
+
+}
+
+);
+
+}
+);
+
+loadLogs();
+
