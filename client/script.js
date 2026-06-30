@@ -1,205 +1,223 @@
-const map = L.map('map').setView([13.0827, 80.2707], 10);
+const API_URL = "https://ecoaudit-kgty.onrender.com/api/waste";
+
+const map = L.map("map").setView([13.0827, 80.2707], 10);
 
 L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution: '© OpenStreetMap contributors'
-}
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution: "© OpenStreetMap contributors"
+    }
 ).addTo(map);
 
 const form = document.getElementById("wasteForm");
 const logsDiv = document.getElementById("logs");
 
 const totalWasteElement =
-document.getElementById("totalWaste");
+    document.getElementById("totalWaste");
 
 const totalReportsElement =
-document.getElementById("totalReports");
+    document.getElementById("totalReports");
 
 const locationStatus =
-document.getElementById("locationStatus");
+    document.getElementById("locationStatus");
 
 async function loadLogs() {
 
-try {
+    try {
 
-const response = await fetch(
-"http://localhost:5000/api/waste"
-);
+        const response = await fetch(API_URL);
 
-const logs = await response.json();
+        if (!response.ok) {
+            throw new Error("Failed to load data");
+        }
 
-logsDiv.innerHTML = "";
+        const logs = await response.json();
 
-let totalWaste = 0;
+        logsDiv.innerHTML = "";
 
-map.eachLayer(layer => {
+        let totalWaste = 0;
 
-if (layer instanceof L.Marker) {
-map.removeLayer(layer);
-}
+        map.eachLayer(layer => {
 
-});
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
 
-logs.forEach(log => {
+        });
 
-const weight = parseFloat(log.weight);
+        if (!Array.isArray(logs)) {
+            console.error("Invalid response:", logs);
+            return;
+        }
 
-if (!isNaN(weight)) {
-totalWaste += weight;
-}
+        logs.forEach(log => {
 
-const logCard = document.createElement("div");
+            const weight = parseFloat(log.weight);
 
-logCard.className = "log-card";
+            if (!isNaN(weight)) {
+                totalWaste += weight;
+            }
 
-logCard.innerHTML = `
+            const logCard = document.createElement("div");
 
-<h3>${log.category}</h3>
+            logCard.className = "log-card";
 
-<p>⚖️ Weight: ${log.weight} kg</p>
+            logCard.innerHTML = `
+                <h3>${log.category}</h3>
 
-<p>📍 Latitude: ${log.latitude}</p>
+                <p>⚖️ Weight: ${log.weight} kg</p>
 
-<p>📍 Longitude: ${log.longitude}</p>
+                <p>📍 Latitude: ${log.latitude}</p>
 
-<p>🕒 ${new Date(log.createdAt).toLocaleString()}</p>
+                <p>📍 Longitude: ${log.longitude}</p>
 
-${log.image ? `<img
-src="${log.image}"
-alt="Waste Proof"
-style="
-width:100%;
-max-height:250px;
-object-fit:cover;
-border-radius:12px;
-margin-top:10px;
-">` : ""}
-`;
+                <p>🕒 ${new Date(log.createdAt).toLocaleString()}</p>
 
-logsDiv.appendChild(logCard);
+                ${
+                    log.image
+                        ? `
+                        <img
+                            src="${log.image}"
+                            alt="Waste Proof"
+                            style="
+                                width:100%;
+                                max-height:250px;
+                                object-fit:cover;
+                                border-radius:12px;
+                                margin-top:10px;
+                            "
+                        >
+                        `
+                        : ""
+                }
+            `;
 
-if (
-log.latitude &&
-log.longitude
-) {
+            logsDiv.appendChild(logCard);
 
-L.marker([
-log.latitude,
-log.longitude
-])
-.addTo(map)
-.bindPopup(
-`<b>${log.category}</b> <br>
-${log.weight} kg`
-);
+            if (log.latitude && log.longitude) {
 
-}
+                L.marker([
+                    log.latitude,
+                    log.longitude
+                ])
+                    .addTo(map)
+                    .bindPopup(`
+                        <b>${log.category}</b><br>
+                        ${log.weight} kg
+                    `);
 
-});
+            }
 
-totalWasteElement.textContent =
-`${totalWaste} kg`;
+        });
 
-totalReportsElement.textContent =
-logs.length;
+        totalWasteElement.textContent =
+            `${totalWaste} kg`;
 
-}
-catch(error){
+        totalReportsElement.textContent =
+            logs.length;
 
-console.error(error);
+    }
+    catch (error) {
 
-}
+        console.error(error);
+
+        locationStatus.textContent =
+            "❌ Failed to load reports";
+
+    }
 
 }
 
 form.addEventListener(
-"submit",
-async (e) => {
+    "submit",
+    async (e) => {
 
-e.preventDefault();
+        e.preventDefault();
 
-locationStatus.textContent =
-"📍 Getting location...";
+        locationStatus.textContent =
+            "📍 Getting location...";
 
-navigator.geolocation.getCurrentPosition(
+        navigator.geolocation.getCurrentPosition(
 
-async (position) => {
+            async (position) => {
 
-const formData = new FormData();
+                const formData = new FormData();
 
-formData.append(
-"category",
-document.getElementById("category").value
+                formData.append(
+                    "category",
+                    document.getElementById("category").value
+                );
+
+                formData.append(
+                    "weight",
+                    document.getElementById("weight").value
+                );
+
+                formData.append(
+                    "latitude",
+                    position.coords.latitude
+                );
+
+                formData.append(
+                    "longitude",
+                    position.coords.longitude
+                );
+
+                const imageFile =
+                    document.getElementById("image").files[0];
+
+                if (imageFile) {
+
+                    formData.append(
+                        "image",
+                        imageFile
+                    );
+
+                }
+
+                try {
+
+                    const response = await fetch(
+                        API_URL,
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Upload failed");
+                    }
+
+                    locationStatus.textContent =
+                        "✅ Waste report submitted";
+
+                    form.reset();
+
+                    loadLogs();
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    locationStatus.textContent =
+                        "❌ Failed to submit report";
+
+                }
+
+            },
+
+            () => {
+
+                locationStatus.textContent =
+                    "❌ Location permission denied";
+
+            }
+
+        );
+
+    }
 );
-
-formData.append(
-"weight",
-document.getElementById("weight").value
-);
-
-formData.append(
-"latitude",
-position.coords.latitude
-);
-
-formData.append(
-"longitude",
-position.coords.longitude
-);
-
-const imageFile =
-document.getElementById("image").files[0];
-
-if(imageFile){
-
-formData.append(
-"image",
-imageFile
-);
-
-}
-
-try {
-
-await fetch(
-"http://localhost:5000/api/waste",
-{
-method: "POST",
-body: formData
-}
-);
-
-locationStatus.textContent =
-"✅ Waste report submitted";
-
-form.reset();
 
 loadLogs();
-
-}
-catch(error){
-
-console.error(error);
-
-locationStatus.textContent =
-"❌ Failed to submit report";
-
-}
-
-},
-
-() => {
-
-locationStatus.textContent =
-"❌ Location permission denied";
-
-}
-
-);
-
-}
-);
-
-loadLogs();
-
