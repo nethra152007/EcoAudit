@@ -18,6 +18,18 @@ const totalWasteElement =
 const totalReportsElement =
     document.getElementById("totalReports");
 
+const plasticWasteElement =
+    document.getElementById("plasticWaste");
+
+const paperWasteElement =
+    document.getElementById("paperWaste");
+
+const metalWasteElement =
+    document.getElementById("metalWaste");
+
+const ewasteWasteElement =
+    document.getElementById("ewasteWaste");
+
 const locationStatus =
     document.getElementById("locationStatus");
 
@@ -33,9 +45,18 @@ async function loadLogs() {
 
         const logs = await response.json();
 
+        if (!Array.isArray(logs)) {
+            console.error("Invalid response:", logs);
+            return;
+        }
+
         logsDiv.innerHTML = "";
 
         let totalWaste = 0;
+        let plasticWaste = 0;
+        let paperWaste = 0;
+        let metalWaste = 0;
+        let ewasteWaste = 0;
 
         map.eachLayer(layer => {
 
@@ -45,24 +66,40 @@ async function loadLogs() {
 
         });
 
-        if (!Array.isArray(logs)) {
-            console.error("Invalid response:", logs);
-            return;
-        }
-
         logs.forEach(log => {
 
-            const weight = parseFloat(log.weight);
+            const weight =
+                parseFloat(log.weight) || 0;
 
-            if (!isNaN(weight)) {
-                totalWaste += weight;
+            totalWaste += weight;
+
+            switch (log.category) {
+
+                case "Plastic":
+                    plasticWaste += weight;
+                    break;
+
+                case "Paper":
+                    paperWaste += weight;
+                    break;
+
+                case "Metal":
+                    metalWaste += weight;
+                    break;
+
+                case "E-Waste":
+                    ewasteWaste += weight;
+                    break;
+
             }
 
-            const logCard = document.createElement("div");
+            const logCard =
+                document.createElement("div");
 
             logCard.className = "log-card";
 
             logCard.innerHTML = `
+
                 <h3>${log.category}</h3>
 
                 <p>⚖️ Weight: ${log.weight} kg</p>
@@ -71,50 +108,73 @@ async function loadLogs() {
 
                 <p>📍 Longitude: ${log.longitude}</p>
 
-                <p>🕒 ${new Date(log.createdAt).toLocaleString()}</p>
+                <p>🕒 ${new Date(
+                    log.createdAt
+                ).toLocaleString()}</p>
 
                 ${
                     log.image
                         ? `
+                        <div class="proof-badge">
+                            📷 Proof Verified
+                        </div>
+
                         <img
                             src="${log.image}"
                             alt="Waste Proof"
-                            style="
-                                width:100%;
-                                max-height:250px;
-                                object-fit:cover;
-                                border-radius:12px;
-                                margin-top:10px;
-                            "
                         >
                         `
                         : ""
                 }
+
             `;
 
             logsDiv.appendChild(logCard);
 
-            if (log.latitude && log.longitude) {
+            if (
+                log.latitude &&
+                log.longitude
+            ) {
 
                 L.marker([
                     log.latitude,
                     log.longitude
                 ])
-                    .addTo(map)
-                    .bindPopup(`
-                        <b>${log.category}</b><br>
-                        ${log.weight} kg
-                    `);
+                .addTo(map)
+                .bindPopup(`
+                    <b>${log.category}</b><br>
+                    ${log.weight} kg
+                `);
 
             }
 
         });
 
         totalWasteElement.textContent =
-            `${totalWaste} kg`;
+            `${totalWaste.toFixed(1)} kg`;
 
         totalReportsElement.textContent =
             logs.length;
+
+        if (plasticWasteElement) {
+            plasticWasteElement.textContent =
+                `${plasticWaste.toFixed(1)} kg`;
+        }
+
+        if (paperWasteElement) {
+            paperWasteElement.textContent =
+                `${paperWaste.toFixed(1)} kg`;
+        }
+
+        if (metalWasteElement) {
+            metalWasteElement.textContent =
+                `${metalWaste.toFixed(1)} kg`;
+        }
+
+        if (ewasteWasteElement) {
+            ewasteWasteElement.textContent =
+                `${ewasteWaste.toFixed(1)} kg`;
+        }
 
     }
     catch (error) {
@@ -141,7 +201,8 @@ form.addEventListener(
 
             async (position) => {
 
-                const formData = new FormData();
+                const formData =
+                    new FormData();
 
                 formData.append(
                     "category",
@@ -177,16 +238,19 @@ form.addEventListener(
 
                 try {
 
-                    const response = await fetch(
-                        API_URL,
-                        {
-                            method: "POST",
-                            body: formData
-                        }
-                    );
+                    const response =
+                        await fetch(
+                            API_URL,
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
 
                     if (!response.ok) {
-                        throw new Error("Upload failed");
+                        throw new Error(
+                            "Upload failed"
+                        );
                     }
 
                     locationStatus.textContent =
