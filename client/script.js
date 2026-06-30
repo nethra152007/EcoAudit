@@ -37,6 +37,14 @@ const wasteRecycledElement =
 
 const co2PreventedElement =
     document.getElementById("co2Prevented");
+const topCategoryElement =
+    document.getElementById("topCategory");
+
+const goalProgressElement =
+    document.getElementById("goalProgress");
+
+const goalTextElement =
+    document.getElementById("goalText");
 
 
 const locationStatus =
@@ -190,6 +198,12 @@ async function loadLogs() {
 const wasteRecycled =
     totalWaste.toFixed(1);
 
+const treesSaved =
+    (totalWaste * 0.5).toFixed(1);
+
+const wasteRecycled =
+    totalWaste.toFixed(1);
+
 const co2Prevented =
     (totalWaste * 0.75).toFixed(1);
 
@@ -206,6 +220,51 @@ if (wasteRecycledElement) {
 if (co2PreventedElement) {
     co2PreventedElement.textContent =
         `${co2Prevented} kg`;
+}
+
+/* Top Category */
+
+let topCategory = "Plastic";
+let maxWaste = plasticWaste;
+
+if (paperWaste > maxWaste) {
+    maxWaste = paperWaste;
+    topCategory = "Paper";
+}
+
+if (metalWaste > maxWaste) {
+    maxWaste = metalWaste;
+    topCategory = "Metal";
+}
+
+if (ewasteWaste > maxWaste) {
+    maxWaste = ewasteWaste;
+    topCategory = "E-Waste";
+}
+
+if (topCategoryElement) {
+    topCategoryElement.textContent =
+        `${topCategory} (${maxWaste.toFixed(1)} kg)`;
+}
+
+/* Community Goal */
+
+const goalTarget = 100;
+
+const progress =
+    Math.min(
+        (totalWaste / goalTarget) * 100,
+        100
+    );
+
+if (goalProgressElement) {
+    goalProgressElement.style.width =
+        `${progress}%`;
+}
+
+if (goalTextElement) {
+    goalTextElement.textContent =
+        `${totalWaste.toFixed(1)} / ${goalTarget} kg`;
 }
 }
     catch (error) {
