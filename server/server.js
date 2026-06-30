@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const path = require("path");
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 require("dotenv").config();
 
@@ -14,25 +16,20 @@ app.use(cors());
 app.use(express.json());
 
 /* =========================
-   SERVE UPLOADED IMAGES
+   CLOUDINARY CONFIGURATION
 ========================= */
 
-app.use("/uploads", express.static("uploads"));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-/* =========================
-   MULTER CONFIGURATION
-========================= */
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-
-  filename: (req, file, cb) => {
-    const uniqueName =
-      Date.now() + path.extname(file.originalname);
-
-    cb(null, uniqueName);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "ecoaudit",
+    allowed_formats: ["jpg", "jpeg", "png"]
   }
 });
 
@@ -67,6 +64,7 @@ app.get("/", (req, res) => {
 
 app.get("/api/waste", async (req, res) => {
   try {
+
     const reports = await WasteReport
       .find()
       .sort({ createdAt: -1 });
@@ -107,7 +105,7 @@ app.post(
         longitude: Number(req.body.longitude),
 
         image: req.file
-          ? `http://localhost:5000/uploads/${req.file.filename}`
+          ? req.file.path
           : ""
       });
 
