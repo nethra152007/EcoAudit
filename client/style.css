@@ -591,3 +591,63 @@ footer{
         transition-duration:0.01ms!important;
     }
 }
+/* =========================
+   ENVIRONMENTAL IMPACT
+========================= */
+
+.impact-section{
+    max-width:1100px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.impact-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.impact-card{
+    background:linear-gradient(160deg,#ffffff,#eef9e9);
+    border-radius:22px;
+    padding:32px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(76,175,80,0.14);
+    border:1px solid rgba(216,230,200,0.7);
+    transition:0.35s cubic-bezier(.2,.8,.3,1.2);
+    animation:fadeUp 0.8s ease;
+}
+
+.impact-card:hover{
+    transform:translateY(-10px) scale(1.03);
+    box-shadow:0 22px 45px rgba(76,175,80,0.32);
+}
+
+.impact-card h3{
+    color:#5a3825;
+    margin-bottom:15px;
+}
+
+.impact-card p{
+    font-size:3rem;
+    font-weight:800;
+    margin-top:10px;
+}
+
+/* Trees */
+
+#treesSaved{
+    color:#43a047;
+}
+
+/* Recycled */
+
+#wasteRecycled{
+    color:#1e88e5;
+}
+
+/* CO2 */
+
+#co2Prevented{
+    color:#ef6c00;
+}

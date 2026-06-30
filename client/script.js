@@ -29,6 +29,15 @@ const metalWasteElement =
 
 const ewasteWasteElement =
     document.getElementById("ewasteWaste");
+const treesSavedElement =
+    document.getElementById("treesSaved");
+
+const wasteRecycledElement =
+    document.getElementById("wasteRecycled");
+
+const co2PreventedElement =
+    document.getElementById("co2Prevented");
+
 
 const locationStatus =
     document.getElementById("locationStatus");
@@ -175,8 +184,30 @@ async function loadLogs() {
             ewasteWasteElement.textContent =
                 `${ewasteWaste.toFixed(1)} kg`;
         }
+        const treesSaved =
+    (totalWaste * 0.5).toFixed(1);
 
-    }
+const wasteRecycled =
+    totalWaste.toFixed(1);
+
+const co2Prevented =
+    (totalWaste * 0.75).toFixed(1);
+
+if (treesSavedElement) {
+    treesSavedElement.textContent =
+        treesSaved;
+}
+
+if (wasteRecycledElement) {
+    wasteRecycledElement.textContent =
+        `${wasteRecycled} kg`;
+}
+
+if (co2PreventedElement) {
+    co2PreventedElement.textContent =
+        `${co2Prevented} kg`;
+}
+}
     catch (error) {
 
         console.error(error);
